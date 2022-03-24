@@ -8,6 +8,8 @@ homepage = "https://github.com/bertrandkeller/documentago"
 tags = ["docs","responsive","minimal","clean","bootstrap","zerostatic"]
 features = ["docs","bootstrap","scss","netlify","google analytics"]
 
+theme_version = "1.0.0"
+
 [author]
   name = "Robert Austin"
   homepage = "https://www.zerostatic.io"
