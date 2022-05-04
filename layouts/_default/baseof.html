@@ -1,12 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <title>{{ block "title" . }}{{ .Title }} - {{ .Site.Title }}{{ end }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  {{ block "meta_tags" . }}{{end}}
+  <meta name="description" content="{{ .Site.Params.homepage_meta_tags.meta_description }}" />
+  <meta property="og:title" content="{{ with .Title }}{{ . }}{{ else }}{{ .Site.Params.homepage_meta_tags.meta_og_title }}{{ end }}" />
+  <meta property="og:type" content="{{ .Site.Params.homepage_meta_tags.meta_og_type }}" />
+  <meta property="og:url" content="{{ with .Permalink }}{{ . }}{{ else }}{{ .Site.Params.homepage_meta_tags.meta_og_url }}{{ end }}" />
+  <meta property="og:image" content="{{ $.Site.BaseURL | default "/" }}twittercard.png" />
+  <meta property="og:description" content="{{ .Site.Params.homepage_meta_tags.meta_og_description }}" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="{{ .Site.Params.homepage_meta_tags.meta_twitter_site }}" />
+  <meta name="twitter:creator" content="{{ .Site.Params.homepage_meta_tags.meta_twitter_creator }}" />
   <link rel="icon" href="{{ "favicon-32x32.png" | absURL}}">
 
   {{ if .Site.IsServer }}
@@ -27,38 +35,36 @@
 </head>
 
 <body class='page {{ block "body_classes" . }}{{ end }}'>
+  <div id="skip">
+    <a href="#main-menu">Navigation principale</a>
+    <a href="#content">Contenu principal</a>
+    <a href="#secondary-menu">Navigation secondaire</a>
+  </div>
   {{ partial "main-menu-mobile.html" . }}
   <div class="wrapper">
     {{ partial "header.html" . }}
 
-    {{ $displaySidebar := false }}
-    {{ range .Site.Params.mainSections }}
-    {{ if eq $.Section . }}
-    {{ $displaySidebar = true }}
-    {{ end }}
-    {{ end }}
+    {{- $displaySidebar := false -}}
+    {{- if intersect (slice $.Section) .Site.Params.mainSections -}}
+    {{- $displaySidebar = true -}}
+    {{- end -}}
 
-    {{ if $displaySidebar }}
-    <div class="container pt-2 pt-md-6 pb-3 pb-md-6">
+    <main class="container pt-2 pt-md-6 pb-3 pb-md-6">
       <div class="row">
-        <div class="col-12 col-md-3 mb-3">
+        {{- if $displaySidebar -}}
+        <aside class="col-12 col-md-3 mb-3">
           <div class="sidebar">
             {{ partial "sidebar.html" . }}
           </div>
-        </div>
-        <div class="col-12 col-md-9">
+        </aside>
+        {{ end }}
+        <article id="content" class="col-12{{ if $displaySidebar }} col-md-9{{ end }}">
           {{ block "main" . }}
           {{ end }}
-        </div>
+        </article>
       </div>
-    </div>
-    {{ else }}
-    {{ block "main" . }}
-    {{ end }}
-    {{ end}}
+    </main>
   </div>
-
-  {{ partial "sub-footer.html" . }}
 
   {{ $scripts := resources.Get "js/scripts.js" }}
 
@@ -70,8 +76,6 @@
   {{ else }}
   <script type="text/javascript" src="{{ ($scripts | minify | fingerprint).RelPermalink }}"></script>
   {{ end }}
-
-  {{ partial "google-analytics.html" . }}
 
 </body>
 

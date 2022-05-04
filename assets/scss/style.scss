@@ -40,12 +40,32 @@ body {
   font-family: $font-family-base;
   font-size: 1rem;
   font-weight: 400;
-  line-height: 1.4;
+  line-height: 1.6;
   color: $black;
 }
 .container {
   padding-left: $grid-gutter-width;
   padding-right: $grid-gutter-width;
+}
+
+#skip a {
+  display: block;
+  position: absolute;
+  z-index: 9999;
+  left: 1em;
+  top: 1em;
+  transform: translateY(calc(-100% - 1em));
+  padding: 1em;
+  color: #fff;
+  text-decoration: none;
+  background: #222;
+  border: 1px $primary
+}
+
+#skip a:focus {
+  transform: translateY(0);
+  transition: all .2s ease-in-out;
+  outline: 1px solid $primary
 }
 
 // Display breakpoints for DEV
@@ -68,3 +88,7 @@ body {
 //     }
 //   }
 // }
+
+.bold {
+  font-weight: 600;
+}
